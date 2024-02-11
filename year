@@ -1,0 +1,48 @@
+package com.example.year_loader
+
+import android.graphics.Color
+import android.graphics.PorterDuff
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.ProgressBar
+import android.widget.TextView
+import java.time.LocalDate
+import java.time.Month
+import java.time.temporal.ChronoUnit
+import java.util.*
+import java.text.SimpleDateFormat
+import java.lang.System.getProperty
+import kotlin.math.abs
+import java.util.GregorianCalendar
+import android.os.Handler
+
+class YearLoader : AppCompatActivity() {
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var textView: TextView
+    private lateinit var mHandler: Handler
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_year_loader)
+
+        progressBar = findViewById<ProgressBar>(R.id.progressBarYear)
+        textView = findViewById<TextView>(R.id.textViewYear)
+        mHandler = Handler()
+
+        val calendar = GregorianCalendar.getInstance()
+        val startDate = LocalDate.of(calendar.get(GregorianCalendar.YEAR), Month.JANUARY, 1)
+        val now = LocalDate.now()
+        val yearsPassed = ChronoUnit.DAYS.between(startDate, now)
+        mHandler.postDelayed({ yearsPassed }, 1000)
+
+        textView.text = (((yearsPassed * 100) / 365).toString() + "%")
+        progressBar.progress = (((yearsPassed * 100) / 365).toInt() + progressBar.getProgress())
+        mHandler.postDelayed({ progressBar.progress }, 1000)
+
+        // Color of ProgressBar
+        val progressDrawable = progressBar.progressDrawable.mutate()
+        progressDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+        progressBar.progressDrawable = progressDrawable
+    }
+}
