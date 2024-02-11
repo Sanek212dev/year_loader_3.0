@@ -1,0 +1,54 @@
+package com.example.year_loader
+
+import android.graphics.Color
+import android.graphics.PorterDuff
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.ProgressBar
+import android.widget.TextView
+import java.time.LocalDate
+import java.time.Month
+import java.time.temporal.ChronoUnit
+import java.util.*
+import java.text.SimpleDateFormat
+import java.lang.System.getProperty
+import java.time.LocalDateTime
+import kotlin.math.abs
+import java.util.GregorianCalendar
+import android.os.Handler
+
+class MonthLoader : AppCompatActivity() {
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var textView: TextView
+    private lateinit var mHandler: Handler
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_month_loader)
+
+        progressBar = findViewById<ProgressBar>(R.id.progressBarMonth)
+        textView = findViewById<TextView>(R.id.textViewMonth)
+        mHandler = Handler()
+
+        val currentMonth = LocalDateTime.now().monthValue
+        val calendar1 = Calendar.getInstance()
+        val currentYear = calendar1.get(Calendar.YEAR)
+        val calendar = GregorianCalendar.getInstance()
+        val startDate = LocalDate.of(currentYear, currentMonth, 1)
+        val now = LocalDate.now()
+        val daysPassed = ChronoUnit.DAYS.between(startDate, now)
+        mHandler.postDelayed({ daysPassed }, 1000)
+        val daysInCurrentMonth = now.lengthOfMonth()
+
+        textView.text = (((daysPassed+1) * 100 / daysInCurrentMonth).toString() + "%")
+
+        progressBar.progress = (((daysPassed+1) * 100 / daysInCurrentMonth).toInt() + progressBar.getProgress())
+        mHandler.postDelayed({ progressBar.progress }, 1000)
+
+        // Color of ProgressBar
+        val progressDrawable = progressBar.progressDrawable.mutate()
+        progressDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+        progressBar.progressDrawable = progressDrawable
+    }
+}
