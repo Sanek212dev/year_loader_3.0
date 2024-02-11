@@ -1,0 +1,51 @@
+package com.example.year_loader
+
+import android.graphics.Color
+import android.graphics.PorterDuff
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.ProgressBar
+import android.widget.TextView
+import java.time.LocalDate
+import java.time.Month
+import java.time.temporal.ChronoUnit
+import java.text.SimpleDateFormat
+import java.time.LocalDate.now
+import java.util.*
+import java.lang.System.getProperty
+import kotlin.math.abs
+import java.util.GregorianCalendar
+import android.os.Handler
+
+class DayLoader : AppCompatActivity() {
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var textView: TextView
+    private lateinit var mHandler: Handler
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_day_loader)
+
+        progressBar = findViewById<ProgressBar>(R.id.progressBarDay)
+        textView = findViewById<TextView>(R.id.textViewDay)
+        mHandler = Handler()
+
+        val calendar = Calendar.getInstance()
+        val currentHour: Int = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMinut: Int = calendar.get(Calendar.MINUTE)
+        mHandler.postDelayed({ currentHour }, 1000)
+        mHandler.postDelayed({ currentMinut }, 1000)
+
+
+        textView.text = (((currentHour * 60 + currentMinut) * 100 / 1440).toString() + "%")
+        progressBar.progress = (((currentHour * 60 + currentMinut) * 100 / 1440).toInt() + progressBar.getProgress())
+        mHandler.postDelayed({ progressBar.progress }, 1000)
+
+        // Color of ProgressBar
+        val progressDrawable = progressBar.progressDrawable.mutate()
+        progressDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+        progressBar.progressDrawable = progressDrawable
+    }
+
+}
